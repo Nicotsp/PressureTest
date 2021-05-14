@@ -40,7 +40,6 @@ WTMGRDEFCONTEXTEX gpWTMgrDefContextEx = nullptr;
 
 // TODO - add more wintab32 function pointers as needed
 
-
 void save(int patNum, std::string exerciseName) {
 
 	//AJOUTER CODE ICI (copier patient.txt dans autre fichier, le modifier (enlever derniere ligne, nommer nouveau fichier, puis détruire patient.txt)
@@ -53,6 +52,7 @@ void addPatientData() {
 	//pourra demander plus d'informations par la suite
 
 }
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Purpose

@@ -15,12 +15,13 @@
 #define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/Wintab/MSGPACK.h>
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/Wintab/WINTAB.h>
+#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/MSGPACK.h>
+#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/WINTAB.h>
 #define PACKETDATA	(PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE | PK_ORIENTATION | PK_ROTATION)
 #define PACKETMODE	PK_BUTTONS
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/Wintab/PKTDEF.h>
+#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/PKTDEF.h>
 #include "Utils.h"
+
 #include "PressureTest.h"
 
 constexpr int MAX_LOADSTRING = 100;
@@ -85,6 +86,7 @@ int APIENTRY _tWinMain(
 			DispatchMessage(&msg);
 		}
 	}
+	
 
 	// Return Wintab resources.
 	Cleanup();
@@ -206,10 +208,6 @@ LRESULT CALLBACK WndProc(
 	static UINT rotation;
 	static RECT rcClient;
 	PAINTSTRUCT psPaint;
-
-	//Informations du patient
-	static int patNum;
-	static std::string exerciseName;
 	
 	PACKET pkt;
 	BOOL fHandled = TRUE;
@@ -243,7 +241,7 @@ LRESULT CALLBACK WndProc(
 		break;
 
 	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
+		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// Parse the menu selections:
 		switch (wmId)
@@ -358,7 +356,6 @@ LRESULT CALLBACK WndProc(
 	case WM_MOUSEMOVE:
 		xMousePos = GET_X_LPARAM(lParam);
 		yMousePos = GET_Y_LPARAM(lParam);
-		break;
 
 	case WT_PACKET:
 		if (gpWTPacket((HCTX)lParam, wParam, &pkt))
@@ -383,7 +380,8 @@ LRESULT CALLBACK WndProc(
 				|| (prsNew != prsOld))
 			{
 				InvalidateRect(hWnd, NULL, TRUE);
-				fprintf(fp, " %f %f %f %f %f", ptNew.x, ptNew.y , prsNew , azimuth, altitude);
+				//Ligne à lire en-dessous
+				fprintf(fp, "%i %i %u %d %d\n", ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 			}
 		}
 		break;

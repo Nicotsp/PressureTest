@@ -13,6 +13,7 @@
 #define IDM_SAVE				106
 #define IDM_PATINFO				111
 #define IDI_PRESSURETEST			107
+//#define IDM_RECORD				106
 #define IDI_SMALL				108
 #define IDC_PRESSURETEST			109
 #define IDC_MYICON				2

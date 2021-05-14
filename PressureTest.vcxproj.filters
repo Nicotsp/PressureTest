@@ -39,13 +39,13 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Wintab\MSGPACK.h">
+    <ClInclude Include="MSGPACK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Wintab\PKTDEF.h">
+    <ClInclude Include="PKTDEF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Wintab\WINTAB.h">
+    <ClInclude Include="WINTAB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

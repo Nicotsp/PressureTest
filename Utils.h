@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdarg.h>
 
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/Wintab/WINTAB.H>		// NOTE: get from wactab header package
+#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/WINTAB.h>		// NOTE: get from wactab header package
 
 //////////////////////////////////////////////////////////////////////////////
 // Ignore warnings about using unsafe string functions.
@@ -78,6 +78,7 @@ extern WTMGRDEFCONTEXTEX gpWTMgrDefContextEx;
 //enregistrement des données
 void Save(int patNum, std::string exerciseName);
 void addPatientData();
+
 
 //////////////////////////////////////////////////////////////////////////////
 
