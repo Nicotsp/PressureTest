@@ -15,11 +15,11 @@
 #define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/MSGPACK.h>
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/WINTAB.h>
+#include "MSGPACK.h"
+#include "WINTAB.h"
 #define PACKETDATA	(PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE | PK_ORIENTATION | PK_ROTATION)
 #define PACKETMODE	PK_BUTTONS
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/PKTDEF.h>
+#include "PKTDEF.h"
 #include "Utils.h"
 
 #include "PressureTest.h"
