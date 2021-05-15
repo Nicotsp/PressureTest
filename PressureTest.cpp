@@ -17,7 +17,7 @@
 
 #include "MSGPACK.h"
 #include "WINTAB.h"
-#define PACKETDATA	(PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE | PK_ORIENTATION | PK_ROTATION)
+#define PACKETDATA	(PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE | PK_ORIENTATION | PK_ROTATION | PK_TIME)
 #define PACKETMODE	PK_BUTTONS
 #include "PKTDEF.h"
 #include "Utils.h"
@@ -367,6 +367,7 @@ LRESULT CALLBACK WndProc(
 			{
 				MessageBeep(0);
 			}
+			hCtx = (HCTX)lParam;
 			ptOld = ptNew;
 			prsOld = prsNew;
 
@@ -384,7 +385,7 @@ LRESULT CALLBACK WndProc(
 			{
 				InvalidateRect(hWnd, NULL, TRUE);
 				//Ligne à lire en-dessous
-				fprintf(fp, "%i %i %u %d %d\n", ptNew.x, ptNew.y, prsNew, azimuth, altitude);
+				fprintf(fp, "%i %i %i %u %d %d\n", hCtx, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 			}
 		}
 		break;
