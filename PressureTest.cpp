@@ -214,6 +214,7 @@ LRESULT CALLBACK WndProc(
 	LRESULT lResult = 0L;
 	static int xMousePos = 0;
 	static int yMousePos = 0;
+	static int t = 0;
 
 	switch (message)
 	{
@@ -372,6 +373,8 @@ LRESULT CALLBACK WndProc(
 			ptOld = ptNew;
 			prsOld = prsNew;
 
+			t = pkt.pkTime;
+
 			ptNew.x = pkt.pkX;
 			ptNew.y = pkt.pkY;
 
@@ -386,7 +389,7 @@ LRESULT CALLBACK WndProc(
 			{
 				InvalidateRect(hWnd, NULL, TRUE);
 				//Ligne à lire en-dessous
-				fprintf(fp, "%p %i %i %u %d %d\n", hCtx, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
+				fprintf(fp, "%d %i %i %u %d %d\n", t, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 			}
 		}
 		break;
