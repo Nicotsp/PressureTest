@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdarg.h>
 
-#include <D:/ETUDES/ECOLE/TSP/2A/CASSIOPEE/NOUVELLE VERSION/SampleCode/WINTAB.h>		// NOTE: get from wactab header package
+#include "WINTAB.h"		// NOTE: get from wactab header package
 
 //////////////////////////////////////////////////////////////////////////////
 // Ignore warnings about using unsafe string functions.

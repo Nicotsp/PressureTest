@@ -249,13 +249,16 @@ LRESULT CALLBACK WndProc(
 		case IDM_ABOUT:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
-		case IDM_PATINFO:
+			
+		case IDM_SAVE:
+			//PARTIE 1 :
 			//pop up pour demander info des patients
 			//renseigne patNum (numero patient) et exerciseName (nom de l'exercice)
+		
 			//addPatientData();   //se référer Utils.cpp ligne 50
-			break;
-		case IDM_SAVE:
-			//sauvergarder patient.txt dans autre fichier, plus autre 
+			
+			//PARTIE 2:
+			//sauvergarder patient.txt dans autre fichier, nommé ce fichier avec infos précédentes 
 			//Save(patNum, exerciseName); //se référer Utils.cpp ligne 44
 			break;
 		case IDM_EXIT:

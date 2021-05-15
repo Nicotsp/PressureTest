@@ -42,8 +42,8 @@ WTMGRDEFCONTEXTEX gpWTMgrDefContextEx = nullptr;
 
 void save(int patNum, std::string exerciseName) {
 
-	//AJOUTER CODE ICI (copier patient.txt dans autre fichier, le modifier (enlever derniere ligne, nommer nouveau fichier, puis détruire patient.txt)
-	//nom du nouveau fichier -->  patNum_exerciceName_nbEssais.txt    où nbEssais est incrémenter en fonction du nombre d'essais deja existants
+	//AJOUTER CODE ICI (copier patient.txt dans autre fichier, le modifier (enlever derniere ligne, nommer nouveau fichier, ajouter colonne avec le temps (freq de 125hz), puis détruire patient.txt)
+	//nom du nouveau fichier -->  patNum_exerciceName_nbEssais.txt    où nbEssais est incrémenter en fonction du nombre d'essais deja existants, 
 }
 
 void addPatientData() {
