@@ -385,7 +385,7 @@ LRESULT CALLBACK WndProc(
 			{
 				InvalidateRect(hWnd, NULL, TRUE);
 				//Ligne à lire en-dessous
-				fprintf(fp, "%i %i %i %u %d %d\n", hCtx, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
+				fprintf(fp, "%p %i %i %u %d %d\n", hCtx, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 			}
 		}
 		break;
