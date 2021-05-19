@@ -261,7 +261,6 @@ LRESULT CALLBACK WndProc(
 			//PARTIE 2:
 			//sauvergarder patient.txt dans autre fichier, nommé ce fichier avec infos précédentes 
 			//Save(patNum, exerciseName); //se référer Utils.cpp ligne 44
-
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
@@ -369,7 +368,6 @@ LRESULT CALLBACK WndProc(
 			{
 				MessageBeep(0);
 			}
-			hCtx = (HCTX)lParam;
 			ptOld = ptNew;
 			prsOld = prsNew;
 

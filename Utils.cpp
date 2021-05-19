@@ -12,6 +12,7 @@
 #include "stdafx.h"
 
 #include "Utils.h"
+#include "winuser.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -46,10 +47,43 @@ void save(int patNum, std::string exerciseName) {
 	//nom du nouveau fichier -->  patNum_exerciceName_nbEssais.txt    où nbEssais est incrémenter en fonction du nombre d'essais deja existants, 
 }
 
-void addPatientData() {
+void addPatientData(HINSTANCE hInstance2) {
 
 	//AJOUTER CODE ICI (pop-up demander le numéro du patient et le nom de l'exercice)
 	//pourra demander plus d'informations par la suite
+	
+	static TCHAR szWindowClass[] = _T("DesktopApp");
+	static TCHAR szTitle[] = _T("Windows Desktop Guided Tour Application");
+
+	// The parameters to CreateWindow explained:
+	// szWindowClass: the name of the application
+	// szTitle: the text that appears in the title bar
+	// WS_OVERLAPPEDWINDOW: the type of window to create
+	// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
+	// 500, 100: initial size (width, length)
+	// NULL: the parent of this window
+	// NULL: this application does not have a menu bar
+	// hInstance: the first parameter from WinMain
+	// NULL: not used in this application
+	HWND hWnd = CreateWindow(
+		szWindowClass,
+		szTitle,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		500, 100,
+		NULL,
+		NULL,
+		hInstance2,
+		NULL
+	);
+	if (!hWnd)
+	{
+		MessageBox(NULL,
+			_T("Call to CreateWindow failed!"),
+			_T("Windows Desktop Guided Tour"),
+			NULL);
+
+	}
 
 }
 
