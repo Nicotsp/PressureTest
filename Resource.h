@@ -10,7 +10,7 @@
 #define IDD_ABOUTBOX			103
 #define IDM_ABOUT				104
 #define IDM_EXIT				105
-#define IDM_SAVE				106
+#define IDM_RECORDING	106
 #define IDI_PRESSURETEST			107
 //#define IDM_RECORD				106
 #define IDI_SMALL				108

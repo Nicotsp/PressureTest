@@ -21,7 +21,9 @@
 #define PACKETMODE	PK_BUTTONS
 #include "PKTDEF.h"
 #include "Utils.h"
-
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "PressureTest.h"
 
 constexpr int MAX_LOADSTRING = 100;
@@ -37,6 +39,8 @@ char* gpszProgramName = "PressureTest";
 static LOGCONTEXT glogContext = { 0 };
 
 FILE* fp;
+
+bool saving=false;
 
 //////////////////////////////////////////////////////////////////////////////
 // Forward declarations of functions included in this code module:
@@ -90,6 +94,7 @@ int APIENTRY _tWinMain(
 
 	// Return Wintab resources.
 	Cleanup();
+	
 
 	return static_cast<int>(msg.wParam);
 }
@@ -174,6 +179,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+	HWND lol = CreateWindowExA(0, "WindowOfDLL", szTitle, WS_SIZEBOX | WS_CLIPSIBLINGS, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, NULL, NULL, hInstance, NULL);
+	SetParent(lol, hWnd);
+	ShowWindow(lol, SW_SHOWNORMAL);
 
 	return TRUE;
 }
@@ -251,7 +259,7 @@ LRESULT CALLBACK WndProc(
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
 			
-		case IDM_SAVE:
+		case IDM_RECORDING:
 			//PARTIE 1 :
 			//pop up pour demander info des patients
 			//renseigne patNum (numero patient) et exerciseName (nom de l'exercice)
@@ -261,8 +269,35 @@ LRESULT CALLBACK WndProc(
 			//PARTIE 2:
 			//sauvergarder patient.txt dans autre fichier, nommé ce fichier avec infos précédentes 
 			//Save(patNum, exerciseName); //se référer Utils.cpp ligne 44
+			if (saving == true) {
+				int msgboxID = MessageBox(
+					NULL,
+					"Recording will end.\nAre you sure ?",
+					"Warning",
+					MB_ICONEXCLAMATION | MB_YESNO);
+
+				if (msgboxID == IDYES)
+				{
+					saving = !saving;
+				}
+			}
+			else if (saving==false){
+				int msgboxID = MessageBox(
+					NULL,
+					"Recording will start.\nAre you ready ?",
+					"Warning",
+					MB_ICONEXCLAMATION | MB_YESNO);
+
+				if (msgboxID == IDYES)
+				{
+					saving = !saving;
+				}
+			}
+			
+
 			break;
 		case IDM_EXIT:
+			fclose(fp);
 			DestroyWindow(hWnd);
 			break;
 		default:
@@ -385,9 +420,11 @@ LRESULT CALLBACK WndProc(
 				|| (ptNew.y != ptOld.y)
 				|| (prsNew != prsOld))
 			{
-				InvalidateRect(hWnd, NULL, TRUE);
-				//Ligne à lire en-dessous
-				fprintf(fp, "%d %i %i %u %d %d\n", t, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
+				if (saving == true) {
+					InvalidateRect(hWnd, NULL, TRUE);
+					//Ligne à lire en-dessous
+					fprintf(fp, "%d %i %i %u %d %d\n", t, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
+				}
 			}
 		}
 		break;
