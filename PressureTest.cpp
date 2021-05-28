@@ -284,7 +284,7 @@ LRESULT CALLBACK WndProc(
 					string line;
 					ifstream ini_file{ "patient.txt" };
 					ofstream out_file{ "copy.txt" };
-					out_file << "X Y Pression Azimuth, Altitude\n";
+					out_file << "X Y Pression Azimuth Altitude\n";
 					int i = 1;
 					while (getline(ini_file, line) && i < line_count("patient.txt")) {
 						out_file << line<<"\n";
@@ -293,6 +293,7 @@ LRESULT CALLBACK WndProc(
 				}
 			}
 			else if (saving==false){
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, About);
 				int msgboxID = MessageBox(
 					NULL,
 					"Recording will start.\nAre you ready ?",
