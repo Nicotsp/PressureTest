@@ -17,3 +17,5 @@
 #pragma once
 
 #include "resource.h"
+using namespace std;
+int line_count(string a);

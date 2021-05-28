@@ -27,6 +27,7 @@
 #include "PressureTest.h"
 
 constexpr int MAX_LOADSTRING = 100;
+using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Global Variables:
@@ -279,6 +280,16 @@ LRESULT CALLBACK WndProc(
 				if (msgboxID == IDYES)
 				{
 					saving = !saving;
+					
+					string line;
+					ifstream ini_file{ "patient.txt" };
+					ofstream out_file{ "copy.txt" };
+					out_file << "X Y Pression Azimuth, Altitude\n";
+					int i = 1;
+					while (getline(ini_file, line) && i < line_count("patient.txt")) {
+						out_file << line<<"\n";
+						i += 1;
+					}
 				}
 			}
 			else if (saving==false){
@@ -426,8 +437,12 @@ LRESULT CALLBACK WndProc(
 					fprintf(fp, "%d %i %i %u %d %d\n", t, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 				}
 			}
+
 		}
+
 		break;
+		
+
 
 	case WM_ACTIVATE:
 		if (GET_WM_ACTIVATE_STATE(wParam, lParam))
@@ -561,3 +576,16 @@ void Cleanup(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+int line_count(string a)
+{
+	int count = 0;
+	string line;
+
+	/* Creating input filestream */
+	ifstream file(a);
+	while (getline(file, line))
+		count++;
+
+	return count;
+}
