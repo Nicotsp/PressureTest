@@ -43,13 +43,19 @@ FILE* fp;
 
 bool saving=false;
 
+string name;
+string firstname;
+string exercice;
+int trial;
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Forward declarations of functions included in this code module:
 ATOM					MyRegisterClass(HINSTANCE);
 BOOL					InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
-
+INT_PTR CALLBACK	PatInfo(HWND, UINT, WPARAM, LPARAM);
 HCTX static NEAR TabletInit(HWND hWnd);
 void Cleanup(void);
 
@@ -284,7 +290,7 @@ LRESULT CALLBACK WndProc(
 					string line;
 					ifstream ini_file{ "patient.txt" };
 					ofstream out_file{ "copy.txt" };
-					out_file << "X Y Pression Azimuth, Altitude\n";
+					out_file << "X Y Pression Azimuth Altitude\n";
 					int i = 1;
 					while (getline(ini_file, line) && i < line_count("patient.txt")) {
 						out_file << line<<"\n";
@@ -293,6 +299,8 @@ LRESULT CALLBACK WndProc(
 				}
 			}
 			else if (saving==false){
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, PatInfo);
+
 				int msgboxID = MessageBox(
 					NULL,
 					"Recording will start.\nAre you ready ?",
@@ -466,6 +474,108 @@ LRESULT CALLBACK WndProc(
 	}
 	return 0;
 }
+//////////////////////////////////////////////////////////////////////////////
+
+INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	TCHAR lpszPassword[16];
+	WORD cchPassword;
+
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		// Set password character to a plus sign (+) 
+		/*SendDlgItemMessage(hDlg,
+			IDC_EDIT_NAME,
+			EM_SETPASSWORDCHAR,
+			(WPARAM)'+',
+			(LPARAM)0);
+		*/
+
+		// Set the default push button to "Cancel." 
+		SendMessage(hDlg,
+			DM_SETDEFID,
+			(WPARAM)IDCANCEL,
+			(LPARAM)0);
+
+		return TRUE;
+
+	case WM_COMMAND:
+		// Set the default push button to "OK" when the user enters text. 
+		if (HIWORD(wParam) == EN_CHANGE &&
+			LOWORD(wParam) == IDC_EDIT_NAME)
+		{
+			SendMessage(hDlg,
+				DM_SETDEFID,
+				(WPARAM)IDOK,
+				(LPARAM)0);
+		}
+		switch (wParam)
+		{
+		case IDOK:
+			// Get number of characters. 
+			cchPassword = (WORD)SendDlgItemMessage(hDlg,
+				IDC_EDIT_NAME,
+				EM_LINELENGTH,
+				(WPARAM)0,
+				(LPARAM)0);
+			if (cchPassword >= 16)
+			{
+				MessageBox(hDlg,
+					"Too many characters.",
+					"Error",
+					MB_OK);
+
+				EndDialog(hDlg, TRUE);
+				return FALSE;
+			}
+			else if (cchPassword == 0)
+			{
+				MessageBox(hDlg,
+					"No characters entered.",
+					"Error",
+					MB_OK);
+
+				EndDialog(hDlg, TRUE);
+				return FALSE;
+			}
+
+			// Put the number of characters into first word of buffer. 
+			*((LPWORD)lpszPassword) = cchPassword;
+
+			// Get the characters. 
+			SendDlgItemMessage(hDlg,
+				IDC_EDIT_NAME,
+				EM_GETLINE,
+				(WPARAM)0,       // line 0 
+				(LPARAM)lpszPassword);
+
+			// Null-terminate the string. 
+			lpszPassword[cchPassword] = 0;
+			MessageBox(hDlg,
+				lpszPassword,
+				"Did it work?",
+				MB_OK);
+			name = lpszPassword;
+			FILE* fo;
+			fo = fopen("patientinfo.txt", "w+");
+			fprintf(fo, "%s \n",name);
+			// Call a local password-parsing function. 
+			//ParsePassword(lpszPassword);
+
+			EndDialog(hDlg, TRUE);
+			return TRUE;
+
+		case IDCANCEL:
+			EndDialog(hDlg, TRUE);
+			return TRUE;
+		}
+		return 0;
+	}
+	return FALSE;
+
+	UNREFERENCED_PARAMETER(lParam);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Message handler for about box.
@@ -589,3 +699,4 @@ int line_count(string a)
 
 	return count;
 }
+//////////////////////////////////////////////////////////////////////////////
