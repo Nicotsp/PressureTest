@@ -47,6 +47,7 @@ string name;
 string firstname;
 string exercice;
 int trial;
+int session;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -557,9 +558,6 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				"Did it work?",
 				MB_OK);
 			name = lpszPassword;
-			FILE* fo;
-			fo = fopen("patientinfo.txt", "w+");
-			fprintf(fo, "%s \n",name);
 			// Call a local password-parsing function. 
 			//ParsePassword(lpszPassword);
 
