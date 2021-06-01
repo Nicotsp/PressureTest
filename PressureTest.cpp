@@ -25,6 +25,7 @@
 #include <fstream>
 #include <string>
 #include "PressureTest.h"
+#include "direct.h"
 
 constexpr int MAX_LOADSTRING = 100;
 using namespace std;
@@ -44,7 +45,7 @@ FILE* fp;
 bool saving=false;
 
 string name;
-string firstname;
+string firstName;
 string exercice;
 int trial;
 int session;
@@ -479,19 +480,15 @@ LRESULT CALLBACK WndProc(
 
 INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	TCHAR lpszPassword[16];
-	WORD cchPassword;
-
+	TCHAR nameContent[25];
+	TCHAR firstNameContent[25];
+	TCHAR sessionNumber[25];
+	WORD firstNameLength;
+	WORD nameLength;
+	WORD sessionLength;
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		// Set password character to a plus sign (+) 
-		/*SendDlgItemMessage(hDlg,
-			IDC_EDIT_NAME,
-			EM_SETPASSWORDCHAR,
-			(WPARAM)'+',
-			(LPARAM)0);
-		*/
 
 		// Set the default push button to "Cancel." 
 		SendMessage(hDlg,
@@ -515,25 +512,28 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case IDOK:
 			// Get number of characters. 
-			cchPassword = (WORD)SendDlgItemMessage(hDlg,
+			//Name
+			nameLength = (WORD)SendDlgItemMessage(hDlg,
 				IDC_EDIT_NAME,
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
-			if (cchPassword >= 16)
+			//Firstname
+			firstNameLength = (WORD)SendDlgItemMessage(hDlg,
+				IDC_EDIT_FIRSTNAME,
+				EM_LINELENGTH,
+				(WPARAM)0,
+				(LPARAM)0);
+			//Session
+			sessionLength = (WORD)SendDlgItemMessage(hDlg,
+				IDC_SESSION,
+				EM_LINELENGTH,
+				(WPARAM)0,
+				(LPARAM)0);
+			if (nameLength == 0||firstNameLength==0||sessionLength==0)
 			{
 				MessageBox(hDlg,
-					"Too many characters.",
-					"Error",
-					MB_OK);
-
-				EndDialog(hDlg, TRUE);
-				return FALSE;
-			}
-			else if (cchPassword == 0)
-			{
-				MessageBox(hDlg,
-					"No characters entered.",
+					"Some fields are missing.",
 					"Error",
 					MB_OK);
 
@@ -542,25 +542,43 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 			// Put the number of characters into first word of buffer. 
-			*((LPWORD)lpszPassword) = cchPassword;
-
+			*((LPWORD)nameContent) = nameLength;
+			*((LPWORD)firstNameContent) = firstNameLength;
+			*((LPWORD)sessionNumber) = sessionLength;
 			// Get the characters. 
+			//Name
 			SendDlgItemMessage(hDlg,
 				IDC_EDIT_NAME,
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
-				(LPARAM)lpszPassword);
+				(LPARAM)nameContent);
+
+			//Firstname
+			SendDlgItemMessage(hDlg,
+				IDC_EDIT_FIRSTNAME,
+				EM_GETLINE,
+				(WPARAM)0,       // line 0 
+				(LPARAM)firstNameContent);
+			//Session
+			SendDlgItemMessage(hDlg,
+				IDC_SESSION,
+				EM_GETLINE,
+				(WPARAM)0,       // line 0 
+				(LPARAM)sessionNumber);
 
 			// Null-terminate the string. 
-			lpszPassword[cchPassword] = 0;
-			MessageBox(hDlg,
-				lpszPassword,
-				"Did it work?",
-				MB_OK);
-			name = lpszPassword;
-			// Call a local password-parsing function. 
-			//ParsePassword(lpszPassword);
+			nameContent[nameLength] = 0;
+			firstNameContent[firstNameLength] = 0;
+			sessionNumber[sessionLength] = 0;
 
+			name = nameContent;
+			name = name+" "+firstNameContent;
+			name = name + " - S" + sessionNumber;
+			_mkdir(name.c_str());
+			MessageBox(hDlg,
+				nameContent,
+				"Are you sure that the entered information is correct?",
+				MB_OK);
 			EndDialog(hDlg, TRUE);
 			return TRUE;
 
