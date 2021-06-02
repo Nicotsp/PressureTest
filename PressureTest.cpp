@@ -26,6 +26,10 @@
 #include <string>
 #include "PressureTest.h"
 #include "direct.h"
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 constexpr int MAX_LOADSTRING = 100;
 using namespace std;
 
@@ -482,11 +486,17 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR nameContent[25];
 	TCHAR firstNameContent[25];
 	TCHAR sessionNumber[25];
+<<<<<<< Updated upstream
 	TCHAR trialNumber[25];
 	WORD firstNameLength;
 	WORD nameLength;
 	WORD sessionLength;
 	WORD trialLength;
+=======
+	WORD firstNameLength;
+	WORD nameLength;
+	WORD sessionLength;
+>>>>>>> Stashed changes
 	switch (message)
 	{
 	case WM_INITDIALOG:
@@ -502,9 +512,13 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		// Set the default push button to "OK" when the user enters text. 
 		if (HIWORD(wParam) == EN_CHANGE &&
+<<<<<<< Updated upstream
 			LOWORD(wParam) == IDC_EDIT_NAME && 
 			LOWORD(wParam) == IDC_EDIT_FIRSTNAME &&
 			LOWORD(wParam) == IDC_SESSION)
+=======
+			LOWORD(wParam) == IDC_EDIT_NAME)
+>>>>>>> Stashed changes
 		{
 			SendMessage(hDlg,
 				DM_SETDEFID,
@@ -533,6 +547,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
+<<<<<<< Updated upstream
 			//Trial
 			trialLength = (WORD)SendDlgItemMessage(hDlg,
 				IDC_EDIT_TRIAL,
@@ -540,6 +555,9 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				(WPARAM)0,
 				(LPARAM)0);
 			if (nameLength == 0||firstNameLength==0||sessionLength==0||trialLength==0)
+=======
+			if (nameLength == 0||firstNameLength==0||sessionLength==0)
+>>>>>>> Stashed changes
 			{
 				MessageBox(hDlg,
 					"Some fields are missing.",
@@ -554,7 +572,10 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			*((LPWORD)nameContent) = nameLength;
 			*((LPWORD)firstNameContent) = firstNameLength;
 			*((LPWORD)sessionNumber) = sessionLength;
+<<<<<<< Updated upstream
 			*((LPWORD)trialNumber) = trialLength;
+=======
+>>>>>>> Stashed changes
 			// Get the characters. 
 			//Name
 			SendDlgItemMessage(hDlg,
@@ -575,21 +596,32 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)sessionNumber);
+<<<<<<< Updated upstream
 			//Trial
 			SendDlgItemMessage(hDlg,
 				IDC_EDIT_TRIAL,
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)trialNumber);
+=======
+
+>>>>>>> Stashed changes
 			// Null-terminate the string. 
 			nameContent[nameLength] = 0;
 			firstNameContent[firstNameLength] = 0;
 			sessionNumber[sessionLength] = 0;
+<<<<<<< Updated upstream
 			trialNumber[trialLength] = 0;
 			name = nameContent;
 			name = name+" "+firstNameContent;
 			name = name + " - S" + sessionNumber;
 			trial = (int)trialNumber;
+=======
+
+			name = nameContent;
+			name = name+" "+firstNameContent;
+			name = name + " - S" + sessionNumber;
+>>>>>>> Stashed changes
 			_mkdir(name.c_str());
 			MessageBox(hDlg,
 				nameContent,
