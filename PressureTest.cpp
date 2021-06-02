@@ -48,6 +48,7 @@ bool saving=false;
 string folderName;
 string fileName;
 int trial;
+int session;
 
 //ComboBox choice
 
@@ -439,7 +440,7 @@ LRESULT CALLBACK WndProc(
 			{
 				if (saving == true) {
 					InvalidateRect(hWnd, NULL, TRUE);
-					//Ligne à lire en-dessous
+					//IMPRESSION DANS PATIENT.TXT
 					fprintf(fp, "%d %i %i %u %d %d\n", t, ptNew.x, ptNew.y, prsNew, azimuth, altitude);
 				}
 			}
@@ -542,12 +543,6 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
-			//Exercice
-			/*exerciceLength = (WORD)SendDlgItemMessage(hDlg,
-				IDC_COMBO_EXERCISE,
-				EM_LINELENGTH,
-				(WPARAM)0,
-				(LPARAM)0);*/
 
 			if (nameLength == 0||firstNameLength==0||sessionLength==0||trialLength==0)
 			{
@@ -565,7 +560,6 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			*((LPWORD)firstNameContent) = firstNameLength;
 			*((LPWORD)sessionNumber) = sessionLength;
 			*((LPWORD)trialNumber) = trialLength;
-			*((LPWORD)exerciceName) = exerciceLength;
 			// Get the characters. 
 			//Name
 			SendDlgItemMessage(hDlg,
@@ -605,7 +599,12 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			sessionNumber[sessionLength] = 0;
 			trialNumber[trialLength] = 0;
 			exerciceName[exerciceLength] = 0;
-			folderName = nameContent;
+
+
+			//PARTIE A REGARDER
+
+			//folderName = "Recordings\\";
+			//folderName = folderName+nameContent;
 			folderName = folderName +" "+firstNameContent;
 			folderName = folderName + " - S" + sessionNumber;
 			trial = (int)trialNumber;
