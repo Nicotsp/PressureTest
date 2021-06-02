@@ -26,10 +26,6 @@
 #include <string>
 #include "PressureTest.h"
 #include "direct.h"
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 constexpr int MAX_LOADSTRING = 100;
 using namespace std;
 
@@ -39,6 +35,8 @@ using namespace std;
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];			// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];	// the main window class name
+HWND hExercice;
+
 
 char* gpszProgramName = "PressureTest";
 static LOGCONTEXT glogContext = { 0 };
@@ -47,12 +45,15 @@ FILE* fp;
 
 bool saving=false;
 
-string name;
-string firstName;
-string exercice;
+string folderName;
+string fileName;
 int trial;
-int session;
 
+//ComboBox choice
+
+CHAR spiral[] = { "Spiral" };
+CHAR signature[] = { "Signature" };
+CHAR cercle[] = { "Cercles Concentriques" };
 
 //////////////////////////////////////////////////////////////////////////////
 // Forward declarations of functions included in this code module:
@@ -272,15 +273,7 @@ LRESULT CALLBACK WndProc(
 			break;
 			
 		case IDM_RECORDING:
-			//PARTIE 1 :
-			//pop up pour demander info des patients
-			//renseigne patNum (numero patient) et exerciseName (nom de l'exercice)
-		
-			//addPatientData();   //se référer Utils.cpp ligne 50
-			
-			//PARTIE 2:
-			//sauvergarder patient.txt dans autre fichier, nommé ce fichier avec infos précédentes 
-			//Save(patNum, exerciseName); //se référer Utils.cpp ligne 44
+			//Enregistrement check et démarrage/arrêt
 			if (saving == true) {
 				int msgboxID = MessageBox(
 					NULL,
@@ -486,17 +479,13 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR nameContent[25];
 	TCHAR firstNameContent[25];
 	TCHAR sessionNumber[25];
-<<<<<<< Updated upstream
 	TCHAR trialNumber[25];
+	TCHAR exerciceName[25];
 	WORD firstNameLength;
 	WORD nameLength;
 	WORD sessionLength;
 	WORD trialLength;
-=======
-	WORD firstNameLength;
-	WORD nameLength;
-	WORD sessionLength;
->>>>>>> Stashed changes
+	WORD exerciceLength;
 	switch (message)
 	{
 	case WM_INITDIALOG:
@@ -506,19 +495,19 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			DM_SETDEFID,
 			(WPARAM)IDCANCEL,
 			(LPARAM)0);
-
+		//ComboBox
+		hExercice = GetDlgItem(hDlg, IDC_COMBO_EXERCISE);
+		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)spiral);
+		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)signature);
+		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)cercle);
 		return TRUE;
 
 	case WM_COMMAND:
 		// Set the default push button to "OK" when the user enters text. 
 		if (HIWORD(wParam) == EN_CHANGE &&
-<<<<<<< Updated upstream
 			LOWORD(wParam) == IDC_EDIT_NAME && 
 			LOWORD(wParam) == IDC_EDIT_FIRSTNAME &&
 			LOWORD(wParam) == IDC_SESSION)
-=======
-			LOWORD(wParam) == IDC_EDIT_NAME)
->>>>>>> Stashed changes
 		{
 			SendMessage(hDlg,
 				DM_SETDEFID,
@@ -547,17 +536,20 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
-<<<<<<< Updated upstream
 			//Trial
 			trialLength = (WORD)SendDlgItemMessage(hDlg,
 				IDC_EDIT_TRIAL,
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
+			//Exercice
+			/*exerciceLength = (WORD)SendDlgItemMessage(hDlg,
+				IDC_COMBO_EXERCISE,
+				EM_LINELENGTH,
+				(WPARAM)0,
+				(LPARAM)0);*/
+
 			if (nameLength == 0||firstNameLength==0||sessionLength==0||trialLength==0)
-=======
-			if (nameLength == 0||firstNameLength==0||sessionLength==0)
->>>>>>> Stashed changes
 			{
 				MessageBox(hDlg,
 					"Some fields are missing.",
@@ -572,10 +564,8 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			*((LPWORD)nameContent) = nameLength;
 			*((LPWORD)firstNameContent) = firstNameLength;
 			*((LPWORD)sessionNumber) = sessionLength;
-<<<<<<< Updated upstream
 			*((LPWORD)trialNumber) = trialLength;
-=======
->>>>>>> Stashed changes
+			*((LPWORD)exerciceName) = exerciceLength;
 			// Get the characters. 
 			//Name
 			SendDlgItemMessage(hDlg,
@@ -596,33 +586,32 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)sessionNumber);
-<<<<<<< Updated upstream
 			//Trial
 			SendDlgItemMessage(hDlg,
 				IDC_EDIT_TRIAL,
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)trialNumber);
-=======
-
->>>>>>> Stashed changes
+			//Exercice
+			SendDlgItemMessage(hDlg,
+				IDC_COMBO_EXERCISE,
+				EM_GETLINE,
+				(WPARAM)0,       // line 0 
+				(LPARAM)exerciceName);
+			
 			// Null-terminate the string. 
 			nameContent[nameLength] = 0;
 			firstNameContent[firstNameLength] = 0;
 			sessionNumber[sessionLength] = 0;
-<<<<<<< Updated upstream
 			trialNumber[trialLength] = 0;
-			name = nameContent;
-			name = name+" "+firstNameContent;
-			name = name + " - S" + sessionNumber;
+			exerciceName[exerciceLength] = 0;
+			folderName = nameContent;
+			folderName = folderName +" "+firstNameContent;
+			folderName = folderName + " - S" + sessionNumber;
 			trial = (int)trialNumber;
-=======
-
-			name = nameContent;
-			name = name+" "+firstNameContent;
-			name = name + " - S" + sessionNumber;
->>>>>>> Stashed changes
-			_mkdir(name.c_str());
+			_mkdir(folderName.c_str());
+			fileName = exerciceName;
+			fileName = fileName + "_" + trialNumber;
 			MessageBox(hDlg,
 				nameContent,
 				"Are you sure that the entered information is correct?",
