@@ -19,6 +19,7 @@
 #define IDC_EDIT_FIRSTNAME              1003
 #define IDC_SESSION                     1004
 #define IDC_EDIT_TRIAL                  1005
+#define IDC_SESSION2                    1005
 #define IDC_COMBO_EXERCISE              1006
 #define IDC_STATIC                      -1
 

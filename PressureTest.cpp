@@ -27,6 +27,7 @@
 #include "PressureTest.h"
 #include "direct.h"
 #include <filesystem>
+#include "stringapiset.h"
 constexpr int MAX_LOADSTRING = 100;
 using namespace std;
 
@@ -37,6 +38,7 @@ HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];			// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];	// the main window class name
 HWND hExercise;
+HWND hExercise2;
 
 
 char* gpszProgramName = "PressureTest";
@@ -48,8 +50,7 @@ bool saving=false;
 
 string folderName;
 string fileName;
-int trial;
-int session;
+string subFolderName;
 
 //ComboBox choice
 CHAR signature[] = { "Signature" };
@@ -292,7 +293,7 @@ LRESULT CALLBACK WndProc(
 					
 					string line;
 					ifstream ini_file{ "patient.txt" };
-					ofstream out_file{ "copy.txt" };
+					ofstream out_file{ subFolderName+"/"+fileName+".txt" };
 					out_file << "X Y Pression Azimuth Altitude\n";
 					int i = 1;
 					while (getline(ini_file, line) && i < line_count("patient.txt")) {
@@ -303,17 +304,16 @@ LRESULT CALLBACK WndProc(
 			}
 			else if (saving==false){
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, PatInfo);
-				
-				int msgboxID = MessageBox(
-					NULL,
-					"Recording will start.\nAre you ready ?",
-					"Warning",
-					MB_ICONEXCLAMATION | MB_YESNO);
+				if (subFolderName !="" || fileName != "") {
+					int msgboxID = MessageBox(NULL, "Recording will start.\nAre you ready ?", "Warning", MB_ICONEXCLAMATION | MB_YESNO);
 
-				if (msgboxID == IDYES)
-				{
-					saving = !saving;
+					if (msgboxID == IDYES)
+					{
+						saving = !saving;
+					}
 				}
+				
+
 			}
 			
 
@@ -485,7 +485,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR firstNameContent[25];
 	TCHAR sessionNumber[25];
 	TCHAR trialNumber[25];
-	TCHAR exerciseName[25];
+	static TCHAR exerciseName[25];
 	WORD firstNameLength;
 	WORD nameLength;
 	WORD sessionLength;
@@ -535,8 +535,6 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				int ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,(WPARAM)0, (LPARAM)0);
 				(TCHAR)SendMessage((HWND)lParam, (UINT)CB_GETLBTEXT,(WPARAM)ItemIndex, (LPARAM)exerciseName);
-				MessageBox(hExercise, exerciseName, TEXT("Item Selected"), MB_OK);
-
 			}
 				break;
 		}
@@ -568,21 +566,14 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				(LPARAM)0);
 			
 			
-			if (nameLength == 0||firstNameLength==0||sessionLength==0||trialLength==0)
-			{
-				MessageBox(hDlg,
-					"Some fields are missing.",
-					"Error",
-					MB_OK);
-				return FALSE;
-			}
+		
+
 
 			// Put the number of characters into first word of buffer. 
 			*((LPWORD)nameContent) = nameLength;
 			*((LPWORD)firstNameContent) = firstNameLength;
 			*((LPWORD)sessionNumber) = sessionLength;
 			*((LPWORD)trialNumber) = trialLength;
-			//*((LPWORD)exerciseName) = exLength;
 			// Get the characters. 
 			//Name
 			SendDlgItemMessage(hDlg,
@@ -613,28 +604,58 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			
 			
-	
 			// Null-terminate the string. 
 			nameContent[nameLength] = 0;
 			firstNameContent[firstNameLength] = 0;
 			sessionNumber[sessionLength] = 0;
 			trialNumber[trialLength] = 0;
-			//exerciseName[exLength] = 0;
 
+			if (nameLength == 0 || firstNameLength == 0 || sessionLength == 0 || trialLength == 0)
+			{
+				MessageBox(hDlg,
+					"Some fields are missing.",
+					"Error",
+					MB_OK);
+				return FALSE;
+			}
+			if (!isNumber(sessionNumber) && !isNumber(trialNumber))
+			{
+				MessageBox(hDlg,
+					"Session field & Trial field are not numbers",
+					"Error",
+					MB_OK);
+				return FALSE;
 
+			}
+			else if (!isNumber(sessionNumber))
+			{
+				MessageBox(hDlg,
+					"Session field is not a number",
+					"Error",
+					MB_OK);
+				return FALSE;
+
+			}
+			else if (!isNumber(trialNumber))
+			{
+				MessageBox(hDlg,
+					"Trial field is not a number",
+					"Error",
+					MB_OK);
+				return FALSE;
+			}
 			//PARTIE A REGARDER
 
 			folderName = "Recordings\\";
 			folderName = folderName+nameContent;
 			folderName = folderName +" "+firstNameContent;
-			folderName = folderName + " - S" + sessionNumber;
-			folderName = folderName + exerciseName;
-			folderName = folderName + " - T" +trialNumber;
+			subFolderName = folderName + "\\S" + sessionNumber;
 			
 			_mkdir("Recordings");
 			_mkdir(folderName.c_str());
+			_mkdir(subFolderName.c_str());
 			
-			//fileName = exerciseName;
+			fileName = exerciseName;
 			fileName = fileName + "_" + trialNumber;
 			MessageBox(hDlg,
 				nameContent,
@@ -645,7 +666,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case IDCANCEL:
 			EndDialog(hDlg, TRUE);
-			return TRUE;
+			return FALSE;
 		}
 		return 0;
 	}
@@ -777,3 +798,14 @@ int line_count(string a)
 	return count;
 }
 //////////////////////////////////////////////////////////////////////////////
+
+
+// Returns true if s is a number else false
+bool isNumber(string s)
+{
+	for (int i = 0; i < s.length()-1; i++)
+		if (isdigit(s[i]) == false)
+			return false;
+
+	return true;
+}
