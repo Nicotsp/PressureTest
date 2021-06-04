@@ -26,6 +26,7 @@
 #include <string>
 #include "PressureTest.h"
 #include "direct.h"
+#include <filesystem>
 constexpr int MAX_LOADSTRING = 100;
 using namespace std;
 
@@ -35,7 +36,7 @@ using namespace std;
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];			// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];	// the main window class name
-HWND hExercice;
+HWND hExercise;
 
 
 char* gpszProgramName = "PressureTest";
@@ -51,10 +52,13 @@ int trial;
 int session;
 
 //ComboBox choice
-
-CHAR spiral[] = { "Spiral" };
 CHAR signature[] = { "Signature" };
-CHAR cercle[] = { "Cercles Concentriques" };
+CHAR loops[] = { "Loops" };
+CHAR text[] = { "Text" };
+CHAR circularSpiral[] = { "Circular spirals" };
+CHAR squareSpirals[] = { "Square spirals" };
+CHAR fiits[] = { "Fiits" };
+CHAR circles[] = { "Circles" };
 
 //////////////////////////////////////////////////////////////////////////////
 // Forward declarations of functions included in this code module:
@@ -299,7 +303,7 @@ LRESULT CALLBACK WndProc(
 			}
 			else if (saving==false){
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, PatInfo);
-
+				
 				int msgboxID = MessageBox(
 					NULL,
 					"Recording will start.\nAre you ready ?",
@@ -481,12 +485,13 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR firstNameContent[25];
 	TCHAR sessionNumber[25];
 	TCHAR trialNumber[25];
-	TCHAR exerciceName[25];
+	TCHAR exerciseName[25];
 	WORD firstNameLength;
 	WORD nameLength;
 	WORD sessionLength;
 	WORD trialLength;
-	WORD exerciceLength;
+	WORD exLength;
+	char exerciseContent;
 	switch (message)
 	{
 	case WM_INITDIALOG:
@@ -497,10 +502,16 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			(WPARAM)IDCANCEL,
 			(LPARAM)0);
 		//ComboBox
-		hExercice = GetDlgItem(hDlg, IDC_COMBO_EXERCISE);
-		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)spiral);
-		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)signature);
-		SendMessage(hExercice, CB_ADDSTRING, 0, (LPARAM)cercle);
+		hExercise = GetDlgItem(hDlg, IDC_COMBO_EXERCISE);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)signature);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)loops);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)text);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)circularSpiral);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)squareSpirals);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)fiits);
+		SendMessage(hExercise, CB_ADDSTRING, 0, (LPARAM)circles);
+		//SendDlgItemMessage(hDlg, IDC_COMBO_EXERCISE, CB_SETCURSEL, Forme, 0);
+		
 		return TRUE;
 
 	case WM_COMMAND:
@@ -515,8 +526,20 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				(WPARAM)IDOK,
 				(LPARAM)0);
 		}
-		switch (wParam)
+		switch (LOWORD(wParam))
 		{
+
+		case IDC_COMBO_EXERCISE:
+		{
+			if (HIWORD(wParam) == CBN_SELCHANGE)
+			{
+				int ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,(WPARAM)0, (LPARAM)0);
+				(TCHAR)SendMessage((HWND)lParam, (UINT)CB_GETLBTEXT,(WPARAM)ItemIndex, (LPARAM)exerciseName);
+				MessageBox(hExercise, exerciseName, TEXT("Item Selected"), MB_OK);
+
+			}
+				break;
+		}
 		case IDOK:
 			// Get number of characters. 
 			//Name
@@ -543,15 +566,14 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_LINELENGTH,
 				(WPARAM)0,
 				(LPARAM)0);
-
+			
+			
 			if (nameLength == 0||firstNameLength==0||sessionLength==0||trialLength==0)
 			{
 				MessageBox(hDlg,
 					"Some fields are missing.",
 					"Error",
 					MB_OK);
-
-				EndDialog(hDlg, TRUE);
 				return FALSE;
 			}
 
@@ -560,6 +582,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			*((LPWORD)firstNameContent) = firstNameLength;
 			*((LPWORD)sessionNumber) = sessionLength;
 			*((LPWORD)trialNumber) = trialLength;
+			//*((LPWORD)exerciseName) = exLength;
 			// Get the characters. 
 			//Name
 			SendDlgItemMessage(hDlg,
@@ -586,30 +609,32 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)trialNumber);
-			//Exercice
-			SendDlgItemMessage(hDlg,
-				IDC_COMBO_EXERCISE,
-				EM_GETLINE,
-				(WPARAM)0,       // line 0 
-				(LPARAM)exerciceName);
+			//Exercise
 			
+			
+			
+	
 			// Null-terminate the string. 
 			nameContent[nameLength] = 0;
 			firstNameContent[firstNameLength] = 0;
 			sessionNumber[sessionLength] = 0;
 			trialNumber[trialLength] = 0;
-			exerciceName[exerciceLength] = 0;
+			//exerciseName[exLength] = 0;
 
 
 			//PARTIE A REGARDER
 
-			//folderName = "Recordings\\";
-			//folderName = folderName+nameContent;
+			folderName = "Recordings\\";
+			folderName = folderName+nameContent;
 			folderName = folderName +" "+firstNameContent;
 			folderName = folderName + " - S" + sessionNumber;
-			trial = (int)trialNumber;
+			folderName = folderName + exerciseName;
+			folderName = folderName + " - T" +trialNumber;
+			
+			_mkdir("Recordings");
 			_mkdir(folderName.c_str());
-			fileName = exerciceName;
+			
+			//fileName = exerciseName;
 			fileName = fileName + "_" + trialNumber;
 			MessageBox(hDlg,
 				nameContent,
