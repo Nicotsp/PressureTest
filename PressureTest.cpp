@@ -41,7 +41,7 @@ HWND hExercise;
 HWND hExercise2;
 
 
-char* gpszProgramName = "PressureTest";
+char* gpszProgramName = "WacomRecorder";
 static LOGCONTEXT glogContext = { 0 };
 
 FILE* fp;
@@ -292,11 +292,12 @@ LRESULT CALLBACK WndProc(
 					saving = !saving;
 					
 					string line;
-					ifstream ini_file{ "patient.txt" };
+					ifstream ini_file{ "lastPatient.txt" };
 					ofstream out_file{ subFolderName+"/"+fileName+".txt" };
+					//ofstream out_file{ "copy.txt" };
 					out_file << "Temps X Y Pression Azimuth Altitude\n";
 					int i = 1;
-					while (getline(ini_file, line) && i < line_count("patient.txt")) {
+					while (getline(ini_file, line) && i < line_count("lastPatient.txt")) {
 						out_file << line<<"\n";
 						i += 1;
 					}
@@ -331,7 +332,7 @@ LRESULT CALLBACK WndProc(
 	case WM_PAINT:
 		if (hdc = BeginPaint(hWnd, &psPaint))
 		{
-			POINT scrPoint = { ptNew.x, ptNew.y };
+			/*POINT scrPoint = {ptNew.x, ptNew.y};
 			ScreenToClient(hWnd, &scrPoint);
 
 			RECT clientRect;
@@ -403,7 +404,7 @@ LRESULT CALLBACK WndProc(
 				TextOut(hdc, scrPoint.x, scrPoint.y, p, c);
 				SetTextAlign(hdc, ta_initial);
 			}
-			EndPaint(hWnd, &psPaint);
+			EndPaint(hWnd, &psPaint);*/
 		}
 		break;
 
