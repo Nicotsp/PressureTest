@@ -98,7 +98,7 @@ int APIENTRY _tWinMain(
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PRESSURETEST));
 	
-	fp = fopen("patient.txt", "w+");
+	fp = fopen("lastPatient.txt", "w+");
 
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -294,12 +294,13 @@ LRESULT CALLBACK WndProc(
 					string line;
 					ifstream ini_file{ "patient.txt" };
 					ofstream out_file{ subFolderName+"/"+fileName+".txt" };
-					out_file << "X Y Pression Azimuth Altitude\n";
+					out_file << "Temps X Y Pression Azimuth Altitude\n";
 					int i = 1;
 					while (getline(ini_file, line) && i < line_count("patient.txt")) {
 						out_file << line<<"\n";
 						i += 1;
 					}
+
 				}
 			}
 			else if (saving==false){
@@ -490,8 +491,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	WORD nameLength;
 	WORD sessionLength;
 	WORD trialLength;
-	WORD exLength;
-	char exerciseContent;
+	int ItemIndex;
 	switch (message)
 	{
 	case WM_INITDIALOG:
@@ -533,7 +533,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (HIWORD(wParam) == CBN_SELCHANGE)
 			{
-				int ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,(WPARAM)0, (LPARAM)0);
+				ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,(WPARAM)0, (LPARAM)0);
 				(TCHAR)SendMessage((HWND)lParam, (UINT)CB_GETLBTEXT,(WPARAM)ItemIndex, (LPARAM)exerciseName);
 			}
 				break;
@@ -600,7 +600,9 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				EM_GETLINE,
 				(WPARAM)0,       // line 0 
 				(LPARAM)trialNumber);
-			//Exercise
+
+
+			
 			
 			
 			
@@ -618,16 +620,16 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 					MB_OK);
 				return FALSE;
 			}
-			if (!isNumber(sessionNumber) && !isNumber(trialNumber))
+			if (!isNumber(sessionNumber)&& !isNumber(trialNumber))
 			{
 				MessageBox(hDlg,
-					"Session field & Trial field are not numbers",
+					"Session field and Trial field are not numbers",
 					"Error",
 					MB_OK);
 				return FALSE;
 
 			}
-			else if (!isNumber(sessionNumber))
+			if (!isNumber(sessionNumber) )
 			{
 				MessageBox(hDlg,
 					"Session field is not a number",
@@ -636,13 +638,15 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				return FALSE;
 
 			}
-			else if (!isNumber(trialNumber))
+
+			if (!isNumber(trialNumber))
 			{
 				MessageBox(hDlg,
 					"Trial field is not a number",
 					"Error",
 					MB_OK);
 				return FALSE;
+
 			}
 			//PARTIE A REGARDER
 
@@ -657,10 +661,10 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			fileName = exerciseName;
 			fileName = fileName + "_" + trialNumber;
-			MessageBox(hDlg,
-				nameContent,
-				"Are you sure that the entered information is correct?",
-				MB_OK);
+			//MessageBox(hDlg,
+				//nameContent,
+			/*	"Are you sure that the entered information is correct?",
+				MB_OK);*/
 			EndDialog(hDlg, TRUE);
 			return TRUE;
 
@@ -801,11 +805,18 @@ int line_count(string a)
 
 
 // Returns true if s is a number else false
-bool isNumber(string s)
+/*bool isNumber(string s)
 {
 	for (int i = 0; i < s.length()-1; i++)
 		if (isdigit(s[i]) == false)
 			return false;
 
+	return true;
+}*/
+bool isNumber(const string& str)
+{
+	for (char const& c : str) {
+		if (std::isdigit(c) == 0) return false;
+	}
 	return true;
 }
