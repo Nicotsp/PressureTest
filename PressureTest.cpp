@@ -41,7 +41,7 @@ HWND hExercise;
 HWND hExercise2;
 
 
-char* gpszProgramName = "WacomRecorder";
+char* gpszProgramName = "PressureTest";
 static LOGCONTEXT glogContext = { 0 };
 
 FILE* fp;
@@ -98,7 +98,7 @@ int APIENTRY _tWinMain(
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PRESSURETEST));
 	
-	fp = fopen("lastPatient.txt", "w+");
+	fp = fopen("lastPatient.txt", "w");
 
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -332,14 +332,15 @@ LRESULT CALLBACK WndProc(
 	case WM_PAINT:
 		if (hdc = BeginPaint(hWnd, &psPaint))
 		{
-			/*POINT scrPoint = {ptNew.x, ptNew.y};
+			
+			POINT scrPoint = {ptNew.x, ptNew.y};
 			ScreenToClient(hWnd, &scrPoint);
 
 			RECT clientRect;
 			GetClientRect(hWnd, &clientRect);
 
 			// Draw horizontal line of cross.
-			PatBlt(hdc,
+			/*PatBlt(hdc,
 				clientRect.left,      scrPoint.y,
 				clientRect.right - 1, 1,
 				DSTINVERT);
@@ -348,16 +349,16 @@ LRESULT CALLBACK WndProc(
 			PatBlt(hdc,
 				scrPoint.x, clientRect.top,
 				1,          clientRect.bottom - 1,
-				DSTINVERT);
+				DSTINVERT);*/
 
 			// scale the input pressure from max_pressure to
 			// the smaller dimension of the display window
 			LONG width = prsNew * half_axis / max_pressure;
 
 			// Draw ellipse at cross intersection.
-			Ellipse(hdc,
-				scrPoint.x - width, scrPoint.y - width,
-				scrPoint.x + width, scrPoint.y + width);
+			//Ellipse(hdc,
+				//scrPoint.x - width, scrPoint.y - width,
+				//scrPoint.x + width, scrPoint.y + width);
 
 			if (prsNew != 0)
 			{
@@ -404,7 +405,7 @@ LRESULT CALLBACK WndProc(
 				TextOut(hdc, scrPoint.x, scrPoint.y, p, c);
 				SetTextAlign(hdc, ta_initial);
 			}
-			EndPaint(hWnd, &psPaint);*/
+			EndPaint(hWnd, &psPaint);
 		}
 		break;
 
@@ -667,8 +668,8 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			/*	"Are you sure that the entered information is correct?",
 				MB_OK);*/
 			EndDialog(hDlg, TRUE);
+			MessageBox(hDlg, "In order for this to work correctly, please use full screen mode", "Warning", MB_OK);
 			return TRUE;
-
 		case IDCANCEL:
 			EndDialog(hDlg, TRUE);
 			return FALSE;
