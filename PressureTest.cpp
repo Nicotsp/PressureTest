@@ -279,7 +279,7 @@ LRESULT CALLBACK WndProc(
 			break;
 			
 		case IDM_RECORDING:
-			//Enregistrement check et démarrage/arrêt
+			//Start or stop the recording
 			if (saving == true) {
 				int msgboxID = MessageBox(
 					NULL,
@@ -294,13 +294,17 @@ LRESULT CALLBACK WndProc(
 					string line;
 					ifstream ini_file{ "lastPatient.txt" };
 					ofstream out_file{ subFolderName+"/"+fileName+".txt" };
-					//ofstream out_file{ "copy.txt" };
+					
 					out_file << "Temps X Y Pression Azimuth Altitude\n";
 					int i = 1;
+					//Copy from lastPatient.txt to storing file
 					while (getline(ini_file, line) && i < line_count("lastPatient.txt")) {
 						out_file << line<<"\n";
 						i += 1;
 					}
+					//Empty the subFolderName and fileName
+					subFolderName = "";
+					fileName = "";
 
 				}
 			}
@@ -312,6 +316,7 @@ LRESULT CALLBACK WndProc(
 					if (msgboxID == IDYES)
 					{
 						saving = !saving;
+						
 					}
 				}
 				
@@ -481,9 +486,12 @@ LRESULT CALLBACK WndProc(
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////////
+// Message Handler for Patient Information Window
+
 
 INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//Variables used to store content from the text boxes
 	TCHAR nameContent[25];
 	TCHAR firstNameContent[25];
 	TCHAR sessionNumber[25];
@@ -493,6 +501,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	WORD nameLength;
 	WORD sessionLength;
 	WORD trialLength;
+	// Index for selected item in ComboBox
 	int ItemIndex;
 	switch (message)
 	{
@@ -533,6 +542,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case IDC_COMBO_EXERCISE:
 		{
+			//Retrieve the text from ComboBox
 			if (HIWORD(wParam) == CBN_SELCHANGE)
 			{
 				ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,(WPARAM)0, (LPARAM)0);
@@ -650,7 +660,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				return FALSE;
 
 			}
-			//PARTIE A REGARDER
+			//File creations
 
 			folderName = "Recordings\\";
 			folderName = folderName+nameContent;
@@ -663,10 +673,7 @@ INT_PTR CALLBACK PatInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			fileName = exerciseName;
 			fileName = fileName + "_" + trialNumber;
-			//MessageBox(hDlg,
-				//nameContent,
-			/*	"Are you sure that the entered information is correct?",
-				MB_OK);*/
+			
 			EndDialog(hDlg, TRUE);
 			MessageBox(hDlg, "In order for this to work correctly, please use full screen mode", "Warning", MB_OK);
 			return TRUE;
@@ -807,14 +814,7 @@ int line_count(string a)
 
 
 // Returns true if s is a number else false
-/*bool isNumber(string s)
-{
-	for (int i = 0; i < s.length()-1; i++)
-		if (isdigit(s[i]) == false)
-			return false;
 
-	return true;
-}*/
 bool isNumber(const string& str)
 {
 	for (char const& c : str) {

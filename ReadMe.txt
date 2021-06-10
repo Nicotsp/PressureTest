@@ -55,7 +55,11 @@ StdAfx.h, StdAfx.cpp
 /////////////////////////////////////////////////////////////////////////////
 Other notes:
 
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
+In order to avoid errors while writing with the Wacom tablet, please use the
+full screen window. 
+
+For now, you still have to delete the files you want manually. However it is 
+quite easy to implement in the future using the code for the Patient Information
+Window.
 
 /////////////////////////////////////////////////////////////////////////////
